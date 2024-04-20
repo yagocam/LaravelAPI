@@ -13,13 +13,14 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::all();
-        return view("posts.index", compact("posts"));
+        return response()->json($posts);
+        //return view("posts.index", compact("posts"));
     }
 
     
     public function create()
     {
-        return view('posts.create');
+        //return view('posts.create');
     }
 
     /**
@@ -29,19 +30,22 @@ class PostController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:20',
-            'content' => 'required|string|max:100',
-            'author' => 'required|string|max:20'
+            'tags' => 'required|array',
+            'content' => 'required|string',
+            'author' => 'required|string|max:50'
         ]);
-        Post::create($request->all());
+        $post = Post::create($request->all());
+        return response()->json($post, 201);
 
-        return redirect()->route('posts.index')->with('success', 'Post created');
+        //return redirect()->route('posts.index')->with('success', 'Post created');
     }
 
    
     public function show(string $id)
     {
         $post = Post::findOrFail($id);
-        return view('posts.show', compact('post'));
+        return response()->json($post, 201);
+        //return view('posts.show', compact('post'));
     }
 
     /**
@@ -50,7 +54,8 @@ class PostController extends Controller
     public function edit(string $id)
     {
         $post = Post::findOrFail($id);
-        return view('posts.edit', compact('post'));
+        return response()->json($post, 201);
+        //return view('posts.edit', compact('post'));
     }
 
     /**
@@ -60,14 +65,15 @@ class PostController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:20',
-            'content' => 'required|string|max:100',
-            'author' => 'required|string|max:20'
+            'tags' => 'required|array',
+            'content' => 'required|string',
+            'author' => 'required|string|max:50'
         ]);
 
         $post = Post::findOrFail($id);
         $post->update($request->all());
-
-        return redirect()->route('posts.index')->with('success', 'Post updated !');
+        return response()->json($post, 200);
+        //return redirect()->route('posts.index')->with('success', 'Post updated !');
     }
 
     /**
@@ -77,7 +83,7 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
         $post->delete();
-
-        return redirect(route('posts.index'))->with('success','Post deleted!');
+        return response()->json(['message' => 'Post deleted'], 204);
+        //return redirect(route('posts.index'))->with('success','Post deleted!');
     }
 }

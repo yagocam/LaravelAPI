@@ -7,5 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
+    protected $casts = [
+        'tags' => 'array',
+    ];
+    protected $fillable = [
+        'title', 'tags', 'content', 'author'
+    ];
     use HasFactory;
 }
