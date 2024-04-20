@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Http\Requests\CreatePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
+use App\Http\Resources\PostResource;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -10,10 +12,15 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::all();
-        return response()->json($posts);
+        if ($request->has('tag')) {
+            $tag = $request->tag;
+            $posts = Post::whereJsonContains('tags', $tag)->get();
+        } else {
+            $posts = Post::all();
+        }
+        return PostResource::collection($posts);
         //return view("posts.index", compact("posts"));
     }
 
@@ -26,14 +33,9 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreatePostRequest  $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:20',
-            'tags' => 'required|array',
-            'content' => 'required|string',
-            'author' => 'required|string|max:50'
-        ]);
+        
         $post = Post::create($request->all());
         return response()->json($post, 201);
 
@@ -44,7 +46,7 @@ class PostController extends Controller
     public function show(string $id)
     {
         $post = Post::findOrFail($id);
-        return response()->json($post, 201);
+        return new PostResource($post);
         //return view('posts.show', compact('post'));
     }
 
@@ -61,14 +63,8 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdatePostRequest $request, string $id)
     {
-        $request->validate([
-            'title' => 'required|string|max:20',
-            'tags' => 'required|array',
-            'content' => 'required|string',
-            'author' => 'required|string|max:50'
-        ]);
 
         $post = Post::findOrFail($id);
         $post->update($request->all());
