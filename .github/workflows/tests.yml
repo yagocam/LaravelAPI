@@ -39,6 +39,7 @@ jobs:
 
       - name: List directory contents
         run: ls -la
+        
       - name: Copy environment file
         run: cp .env.example .env
 
