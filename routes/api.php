@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
 
 /*
@@ -15,10 +16,14 @@ use App\Http\Controllers\PostController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('register', [AuthController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
 
-Route::resource('posts', PostController::class)->except([
-    'create', 'edit'
-]);
+Route::middleware('auth:api')->group(function () {
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::get('user', [AuthController::class, 'user']);
+    Route::resource('posts', PostController::class)->except([
+        'create', 'edit'
+    ]);
+});
