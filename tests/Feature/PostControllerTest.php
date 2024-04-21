@@ -11,6 +11,28 @@ use Tests\TestCase;
 class PostControllerTest extends TestCase
 {
     use RefreshDatabase;
+    protected $token;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        
+         $this->postJson('/api/register', [
+            'name' => 'Test',
+            'email' => 'test@gmail.com',
+            'password' => '12345678',
+        ]);
+
+        
+        $response = $this->postJson('/api/login', [
+            'email' => 'test@gmail.com',
+            'password' => '12345678',
+        ]);
+
+        $this->token = $response['access_token'];
+    }
+
 
     /** @test */
     public function it_returns_a_list_of_posts()
@@ -36,8 +58,10 @@ class PostControllerTest extends TestCase
             'tags' => ['example', 'third']
         ])
     ];
-
-    $response = $this->getJson('/api/posts');
+    $response = $this->withHeaders([
+        'Authorization' => 'Bearer ' . $this->token,
+        'Accept' => 'application/json',
+    ])->getJson('/api/posts');
 
     // Verificando o código de status da resposta
     $response->assertStatus(200);
@@ -63,7 +87,10 @@ class PostControllerTest extends TestCase
          'tags' => [$tag]
      ]);
 
-     $response = $this->getJson("/api/posts?tag={$tag}");
+     $response = $this->withHeaders([
+        'Authorization' => 'Bearer ' . $this->token,
+        'Accept' => 'application/json',
+    ])->getJson("/api/posts?tag={$tag}");
 
      $response->assertStatus(200);
 
@@ -84,14 +111,13 @@ class PostControllerTest extends TestCase
          'content' => 'This is the content of the new post.',
          'tags' => ['test', 'example']
      ];
-
-     // Realizando uma requisição POST para a rota de criação de posts com os dados fornecidos
-     $response = $this->postJson('/api/posts', $postData);
-
-     // Verificando o código de status da resposta
+     $response = $this->withHeaders([
+        'Authorization' => 'Bearer ' . $this->token,
+        'Accept' => 'application/json',
+    ])->postJson('/api/posts',$postData);
+    
      $response->assertStatus(201);
 
-     // Verificando se o post foi criado corretamente e retornado na resposta
      $response->assertJsonFragment($postData);
  }
 
@@ -112,11 +138,11 @@ class PostControllerTest extends TestCase
          'content' => 'Updated post content.',
          'tags' => ['updated', 'tags']
      ];
+     $response = $this->withHeaders([
+        'Authorization' => 'Bearer ' . $this->token,
+        'Accept' => 'application/json',
+    ])->putJson("/api/posts/$post->id",$newData);
 
-     // Fazendo a requisição para editar a postagem
-     $response = $this->putJson('/api/posts/' . $post->id, $newData);
-
-     // Verificando se a resposta foi bem sucedida
      $response->assertStatus(200);
  }
 
@@ -130,9 +156,11 @@ class PostControllerTest extends TestCase
         'content' => 'Original post content.',
         'tags' => ['original', 'tags']
     ]);
-
-      // Fazendo uma solicitação para excluir a postagem
-      $response = $this->delete("/api/posts/{$post->id}");
+    
+    $response = $this->withHeaders([
+        'Authorization' => 'Bearer ' . $this->token,
+        'Accept' => 'application/json',
+    ])->deleteJson("/api/posts/{$post->id}");
 
       // Verificando se a postagem foi excluída corretamente
       $response->assertStatus(204);
