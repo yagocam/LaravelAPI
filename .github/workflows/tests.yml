@@ -37,8 +37,8 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
 
-      - name: Grant permissions to .env
-        run: chmod 644 .env
+      - name: List directory contents
+        run: ls -la
       - name: Copy environment file
         run: cp .env.example .env
 
