@@ -38,10 +38,8 @@ jobs:
         run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: List directory contents
-        run: |
-          ls -la
-          echo "Directory contents listed"
-      
+        run: ls -la
+        
       - name: Copy environment file
         run: cp .env.example .env
 
