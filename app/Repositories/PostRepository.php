@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Contracts\PostRepositoryInterface;
 use App\Models\Post;
 
 class PostRepository implements PostRepositoryInterface

@@ -5,7 +5,7 @@ use App\Http\Requests\CreatePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
 use Illuminate\Http\Request;
-use App\Repositories\PostRepositoryInterface;
+use App\Repositories\Contracts\PostRepositoryInterface;
 trait ResponseTrait
 {
     protected function jsonResponse($data, $status = 200)
