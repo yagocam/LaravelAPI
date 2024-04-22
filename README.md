@@ -1,66 +1,206 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+## Projeto Laravel API para posts
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Projeto de API simples com CRUD completo para posts. Aplicando vários conceitos de programação e otimização de código.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Você pode consumir a api através da url: https://laravelapi-production-2db4.up.railway.app/
+- Swagger: https://laravelapi-production-2db4.up.railway.app/api/documentation
+Nesse readme terá várias informações como: 
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Como executar o projeto
+- Conceitos abordados
+- Documentação da API
+- Autenticação.
+- Explicação do ci/cd do github actions.
+- Site utilizado para fazer o deploy da aplicação.
+- Testes
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Como executar o projeto
 
-## Laravel Sponsors
+Versão testada e utilizada no PHP 8.2.
+Para instalação de todas as dependências do projeto:
+- Compose update
+- composer install --prefer-dist --no-interaction --no-progress
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- ls -la 
+Algumas vezes o .env.example fica invisivel, esse comando força sua visualização para evitar erros.
+- cp .env.example .env
+- php artisan key:generate
+- php artisan migrate
+- php artisan serve
 
-### Premium Partners
+## Utilizando postgresql via docker 
+![App Screenshot](https://i.imgur.com/FTYabf4.png)
+Foi criado a base de dados nomeada de pgsql e um pgadmin nomeado de backend-pgadmin-1
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## Conceitos Abordados
 
-## Contributing
+- Classe para request
+Com o intuito de estabelecer regras para validar todas as informações que serão enviadas o backend, o request é utilizado para garantir que todas os dados estão dentro dos padrões estabelecidos. 
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+![App Screenshot](https://i.imgur.com/U0dh5KF.png)
+Exemplo do CreatePostRequest.php utilizado no projeto
 
-## Code of Conduct
+- Traits
+Traits são frequentemente usados para compartilhar funcionalidades entre controladores, modelos ou outros componentes.
+ResponseTrait sendo criado dentro do PostController.php utilizado no projeto
+![App Screenshot](https://i.imgur.com/fA6iW5d.png)
+Trait sendo utilizado em uma função 
+![App Screenshot](https://i.imgur.com/UEWTbR5.png)
+Foi utilizado essa estrategia pois na maioria das requisições são retornadas um padrão de dados, que é o dado retornado e o status, economizando bastante tempo e esse trait pode ser utilizado em qualquer controle que atenda os requisitos dele. 
+- Repository Pattern
+É usado para separar a lógica de acesso a dados do restante do código da aplicação, o que torna seu código mais modular, mais fácil de entender e mais testável. Além disso, se você precisar mudar de um tipo de armazenamento de dados, só precisará modificar a implementação do repositório, mantendo o restante do código inalterado.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+PostRepository criado para separar as requisições do banco de dados do resto do código.
+![App Screenshot](https://i.imgur.com/KDHa5KN.png)
 
-## Security Vulnerabilities
+Repositório sendo utilizado, também sendo uma injeção de dependência já que o código está confiando no êxito do método do repositório.
+![App Screenshot](https://i.imgur.com/yZ1Mjgz.png)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- Contracts
+Um contrato é uma especificação de métodos que uma classe deve implementar. Ele define um conjunto de operações que outras classes podem confiar que estarão disponíveis quando interagirem com objetos que implementam essa interface.
 
-## License
+A interface PostRepository servindo também como contrato 
+![App Screenshot](https://i.imgur.com/7FDRhRq.png)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Interface 
+Uma interface em programação é uma estrutura que define um conjunto de métodos que uma classe deve implementar. Ela estabelece um contrato que especifica quais comportamentos uma classe deve fornecer, sem definir como esses comportamentos são implementados.
+
+Mesma imagem anterior pois ele acaba se tornando interface e contrato
+![App Screenshot](https://i.imgur.com/7FDRhRq.png)
+
+- Dependency Injection
+A injeção de dependência é uma técnica poderosa para desacoplar classes e promover a flexibilidade, modularidade e testabilidade do código. É especialmente útil ao lidar com classes que têm dependências externas, como acesso a banco de dados ou serviços externos.
+
+No construtor do PostController, você recebe uma instância de PostRepositoryInterface como um argumento. Isso significa que sempre que um PostController é criado, ele precisa de uma implementação de PostRepositoryInterface para funcionar corretamente.
+
+![App Screenshot](https://i.imgur.com/2wCkBxv.png)
+
+## Pipeline de CI/CD 
+Foi utilizado o github actions para validar os testes criados. 
+Ele é acessado pela pasta github/workflows e nesse caso nomeei o arquivo para runtests.yml
+É possível acessar o arquivo utilizado para rodar os testes logo abaixo:
+https://github.com/yagocam/LaravelAPI/blob/main/.github/workflows/runtests.yml
+
+Teste concluido de um commit.
+![App Screenshot](https://i.imgur.com/7FzaoEp.png)
+
+
+Passo a passo executado pela pipeline e exibição do sucesso dos testes
+![App Screenshot](https://i.imgur.com/MVr6n0m.png)
+
+
+### Deploy da aplicação
+
+Foi utilizado o railway para o deploy da aplicação.
+
+Banco de Dados e API hospedados pelo railway.
+![App Screenshot](https://i.imgur.com/L336D1J.png)
+
+
+Visão da tela inicial da API hospedada
+![App Screenshot](https://i.imgur.com/1vSJD05.png)
+
+Swagger do projeto hospedado
+![App Screenshot](https://i.imgur.com/VTmcYSs.png)
+
+
+
+
+
+
+## Documentação da API
+
+#### Cadastra seu usuario
+```http
+  POST /api/register
+```
+| Body   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `name`      | `string` | **Obrigatório**. O seu nome |
+| `email`      | `string` | **ÚNICO** O email que você usará |
+| `password`      | `string` | **Obrigatório** A senha que você utilizará |
+
+
+#### Login do seu usuario
+```http
+  POST /api/login
+```
+| Body   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `email`      | `string` | **Obrigatório** O email que você cadastrou |
+| `password`      | `string` | **Obrigatório** A senha que você cadastrou |
+
+#### Retorna todos os posts
+```http
+  GET /api/posts
+```
+| Header   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `Authorization`      | `string` | **Obrigatório** Bearer + token gerado ao logar/registrar |
+
+#### Retorna todos os posts com as tags solicitadas
+```http
+  GET /api/posts?tag=node
+```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `tag`      | `string` |     A tag na qual você deseja buscar|
+
+| Header   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `Authorization`      | `string` | **Obrigatório** Bearer + token gerado ao logar/registrar |
+
+#### Retorna um post específico
+
+```http
+  GET /api/posts/${id}
+```
+
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `id`      | `string` | **Obrigatório**. O ID do post que você quer |
+
+| Header   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `Authorization`      | `string` |**Obrigatório** Bearer + token gerado ao logar/registrar | |
+
+#### Edita um post específico
+```http
+  PUT /api/posts/${id}
+```
+
+
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `id`      | `string` | **Obrigatório**. O ID do post que você quer |
+
+| Body   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `title`      | `string` |  O title do item que você quer |
+| `author`      | `string` |  O author do item que você quer |
+| `content`      | `string` | O content do item que você quer |
+| `tags`      | `string` |  O tags do item que você quer |
+
+| Header   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `Authorization`      | `string` | **Obrigatório** Bearer + token gerado ao logar/registrar | |
+
+
+
+#### Exclui um post específico
+```http
+  DELETE /api/posts/${id}
+```
+
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `id`      | `string` | **Obrigatório**. O ID do post que você quer |
+
+| Header   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `Authorization`      | `string` |**Obrigatório** Bearer + token gerado ao logar/registrar 
