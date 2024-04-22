@@ -37,7 +37,10 @@ jobs:
 
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
-
+      
+      - name: Update Composer Dependencies
+        run: composer update 
+        
       - name: List directory contents
         run: ls -la
         
