@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 use App\Http\Requests\CreatePostRequest;
 use App\Http\Requests\UpdatePostRequest;
-use App\Models\Post;
 use App\Http\Resources\PostResource;
 use Illuminate\Http\Request;
-
+use App\Repositories\PostRepositoryInterface;
 trait ResponseTrait
 {
     protected function jsonResponse($data, $status = 200)
@@ -17,35 +16,38 @@ trait ResponseTrait
 trait PostCRUDTrait
 {
     use ResponseTrait;
-    public function __construct()
+    protected $postRepository;
+
+    public function __construct(PostRepositoryInterface $postRepository)
     {
+        $this->postRepository = $postRepository;
         $this->middleware('auth:api');
     }
     public function index(Request $request)
     {
         if ($request->has('tag')) {
             $tag = $request->tag;
-            $posts = Post::whereJsonContains('tags', $tag)->get();
+            $posts = $this->postRepository->findByTag($tag);
         } else {
-            $posts = Post::all();
+            $posts = $this->postRepository->all();
         }
         return PostResource::collection($posts);
     }
 
     public function create()
     {
-        // Implementação opcional para o método create
+        //
     }
 
     public function store(CreatePostRequest $request)
     {
-        $post = Post::create($request->all());
+        $post = $this->postRepository->create($request->all());
         return $this->jsonResponse($post, 201);
     }
 
     public function show(string $id)
     {
-        $post = Post::findOrFail($id);
+        $post = $this->postRepository->find($id);
         return new PostResource($post);
     }
 
@@ -56,15 +58,13 @@ trait PostCRUDTrait
 
     public function update(UpdatePostRequest $request, string $id)
     {
-        $post = Post::findOrFail($id);
-        $post->update($request->all());
+        $post = $this->postRepository->update($id, $request->all());
         return $this->jsonResponse($post, 200);
     }
 
     public function destroy(string $id)
     {
-        $post = Post::findOrFail($id);
-        $post->delete();
+        $this->postRepository->delete($id);
         return $this->jsonResponse(['message' => 'Post deleted'], 204);
     }
 }
