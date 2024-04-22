@@ -6,6 +6,8 @@ Projeto de API simples com CRUD completo para posts. Aplicando vários conceitos
 
 - Você pode consumir a api através da url: https://laravelapi-production-2db4.up.railway.app/
 - Swagger: https://laravelapi-production-2db4.up.railway.app/api/documentation
+
+
 Nesse readme terá várias informações como: 
 
 - Como executar o projeto
@@ -40,19 +42,53 @@ Foi criado a base de dados nomeada de pgsql e um pgadmin nomeado de backend-pgad
 ## Conceitos Abordados
 
 - Classe para request
+
+  
 Com o intuito de estabelecer regras para validar todas as informações que serão enviadas o backend, o request é utilizado para garantir que todas os dados estão dentro dos padrões estabelecidos. 
 
 ![App Screenshot](https://i.imgur.com/U0dh5KF.png)
+
+
+
 Exemplo do CreatePostRequest.php utilizado no projeto
 
+
+
 - Traits
+
+
+  
 Traits são frequentemente usados para compartilhar funcionalidades entre controladores, modelos ou outros componentes.
+
+
+
 ResponseTrait sendo criado dentro do PostController.php utilizado no projeto
+
+
+
+
+
 ![App Screenshot](https://i.imgur.com/fA6iW5d.png)
+
+
+
+
+
 Trait sendo utilizado em uma função 
+
+
+
+
 ![App Screenshot](https://i.imgur.com/UEWTbR5.png)
+
+
+
+
 Foi utilizado essa estrategia pois na maioria das requisições são retornadas um padrão de dados, que é o dado retornado e o status, economizando bastante tempo e esse trait pode ser utilizado em qualquer controle que atenda os requisitos dele. 
 - Repository Pattern
+
+
+
 É usado para separar a lógica de acesso a dados do restante do código da aplicação, o que torna seu código mais modular, mais fácil de entender e mais testável. Além disso, se você precisar mudar de um tipo de armazenamento de dados, só precisará modificar a implementação do repositório, mantendo o restante do código inalterado.
 
 PostRepository criado para separar as requisições do banco de dados do resto do código.
@@ -62,23 +98,53 @@ Repositório sendo utilizado, também sendo uma injeção de dependência já qu
 ![App Screenshot](https://i.imgur.com/yZ1Mjgz.png)
 
 - Contracts
+
+
+
+
 Um contrato é uma especificação de métodos que uma classe deve implementar. Ele define um conjunto de operações que outras classes podem confiar que estarão disponíveis quando interagirem com objetos que implementam essa interface.
 
+
+
+
+
 A interface PostRepository servindo também como contrato 
+
+
+
+
 ![App Screenshot](https://i.imgur.com/7FDRhRq.png)
 
-- Interface 
+- Interface
+
+
+
+
 Uma interface em programação é uma estrutura que define um conjunto de métodos que uma classe deve implementar. Ela estabelece um contrato que especifica quais comportamentos uma classe deve fornecer, sem definir como esses comportamentos são implementados.
 
 Mesma imagem anterior pois ele acaba se tornando interface e contrato
+
+
+
 ![App Screenshot](https://i.imgur.com/7FDRhRq.png)
 
 - Dependency Injection
+
+
+
 A injeção de dependência é uma técnica poderosa para desacoplar classes e promover a flexibilidade, modularidade e testabilidade do código. É especialmente útil ao lidar com classes que têm dependências externas, como acesso a banco de dados ou serviços externos.
+
+
 
 No construtor do PostController, você recebe uma instância de PostRepositoryInterface como um argumento. Isso significa que sempre que um PostController é criado, ele precisa de uma implementação de PostRepositoryInterface para funcionar corretamente.
 
+
+
+
 ![App Screenshot](https://i.imgur.com/2wCkBxv.png)
+
+
+
 
 ## Pipeline de CI/CD 
 Foi utilizado o github actions para validar os testes criados. 
