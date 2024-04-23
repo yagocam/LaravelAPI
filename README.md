@@ -7,6 +7,18 @@ Projeto de API simples com CRUD completo para posts. Aplicando vários conceitos
 - Você pode consumir a api através da url: https://laravelapi-production-2db4.up.railway.app/
 - Swagger: https://laravelapi-production-2db4.up.railway.app/api/documentation
 
+## Orientação para SWAGGER
+
+
+
+Ao fazer login ou registro nas requisições de autenticação do swagger, clique no botão "Authorize" para colar o token e funcionar a autenticação para as outras chamadas
+
+
+
+![App Screenshot](https://i.imgur.com/5eSIbWN.png)
+
+
+
 
 Nesse readme terá várias informações como: 
 
